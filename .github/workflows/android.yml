@@ -2,7 +2,8 @@ name: Build Android APK
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -16,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: zulu
           java-version: '17'
@@ -26,6 +27,10 @@ jobs:
         with:
           flutter-version: '3.22.0'
           channel: stable
+          cache: true
+
+      - name: Check Flutter
+        run: flutter doctor -v
 
       - name: Create Android Template Files
         run: flutter create . --project-name=kazaure_free_net --platforms=android --org com.kazaure.freenet
@@ -34,10 +39,11 @@ jobs:
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --verbose
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
