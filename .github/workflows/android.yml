@@ -10,9 +10,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: .
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -28,6 +25,9 @@ jobs:
         with:
           flutter-version: '3.22.0'
           channel: 'stable'
+
+      - name: Create Android Template Files
+        run: flutter create . --platforms=android --org com.kazaure.freenet
 
       - name: Install Dependencies
         run: flutter pub get
